@@ -137,14 +137,14 @@ void CDlgSend::OnCycLine(UINT nID)
 			Trigger[i].bValiu=0;
 			if(!str.IsEmpty())	
 			{
-				_stscanf(str,"%d",&nLine);
+				_stscanf_s(str,"%d",&nLine);
 				if(nLine>0)	
 				{
 					Trigger[i].unLine=nLine;
 					str=m_ClassList.GetItemText(i,2);
 					if(!str.IsEmpty())
 					{
-						_stscanf(str,"%d",&nLine);
+						_stscanf_s(str,"%d",&nLine);
 						if(nLine>0)
 						{
 							Trigger[i].unTrigger=nLine;

@@ -144,14 +144,14 @@ void CDlgFilter::OnButtonFilter()
 			Filter[i].bFilter=0;
 			if(!str.IsEmpty())	
 			{
-				_stscanf(str,"%d",&nLine);
+				_stscanf_s(str,"%d",&nLine);
 				if(nLine>0)	
 				{
 					Filter[i].btNo=nLine;
 					str=m_ClassList.GetItemText(i,2);
 					if(!str.IsEmpty())
 					{
-						_stscanf(str,"%02X",&nLine);
+						_stscanf_s(str,"%02X",&nLine);
 						if(nLine>=0)
 						{
 							Filter[i].btValiu=nLine;

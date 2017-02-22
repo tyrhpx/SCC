@@ -60,8 +60,8 @@ CString CDirectoryDialog::ShowDirectoryTree(CString strIniDir)
 	bi.lpfn		 = BrowseCallbackProc ;
 
 	if(strIniDir.IsEmpty())
-		strcpy(pszTemp,(LPCTSTR)(AfxGetApp()->GetProfileString(m_strIniAppName,m_strIniKeyName,"")));
-	else	strcpy(pszTemp,strIniDir);
+		strcpy_s(pszTemp,(LPCTSTR)(AfxGetApp()->GetProfileString(m_strIniAppName,m_strIniKeyName,"")));
+	else	strcpy_s(pszTemp,strIniDir);
 	bi.lParam   = (int)pszTemp ;	
 	LPITEMIDLIST lpIL = SHBrowseForFolder(&bi);	
 	if(lpIL)	SHGetPathFromIDList(lpIL,bi.pszDisplayName);
@@ -166,7 +166,7 @@ CString CDirectoryDialog::GetDefaultTitle()
 	else
 	{
 		char pszTitle[255];
-		sprintf(pszTitle,"请为%s选择合适的目录:",m_strIniKeyName);
+		sprintf_s(pszTitle,"请为%s选择合适的目录:",m_strIniKeyName);
 		strTitle =  pszTitle ;
 	}
 	return strTitle ;

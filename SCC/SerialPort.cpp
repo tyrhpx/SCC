@@ -9,10 +9,10 @@ DEFINE_GUID(GUID_CLASS_COMPORT, 0x86e0d1e0L, 0x8089, 0x11d0, 0x9c, 0xe4,0x08, 0x
 #endif
 /*
 int g_nBaudrates[]={CBR_600,CBR_1200,CBR_2400,CBR_4800,CBR_9600,CBR_19200,
-					CBR_75,CBR_110,CBR_134,CBR_150,CBR_300,CBR_1800,CBR_7200,
-					CBR_12000,CBR_14400,CBR_28800,CBR_33600,CBR_38400,CBR_56000,
-					CBR_57600,CBR_115200,CBR_128000,CBR_256000};
-					*/
+CBR_75,CBR_110,CBR_134,CBR_150,CBR_300,CBR_1800,CBR_7200,
+CBR_12000,CBR_14400,CBR_28800,CBR_33600,CBR_38400,CBR_56000,
+CBR_57600,CBR_115200,CBR_128000,CBR_256000};
+*/
 //==========================
 CSerialPort::CSerialPort()
 {
@@ -39,30 +39,30 @@ CSerialPort::~CSerialPort()
 
 BOOL CSerialPort::Open(CWnd *pWndReceMsg, UINT uiPortNo,BOOL bConfig,BOOL bStart)
 {
-//	_ASSERTE(uiPortNo>=0 && uiPortNo<MAX_SCC_NUM);
+	//	_ASSERTE(uiPortNo>=0 && uiPortNo<MAX_SCC_NUM);
 	_ASSERTE(uiPortNo>=0 && uiPortNo<255);
 	_ASSERTE(pWndReceMsg!=NULL);
 
 	if(m_bThreadAlive||m_hFile)			return FALSE;
 	char str[100];
-	sprintf(str,"\\\\.\\COM%d",uiPortNo+1);
+	sprintf_s(str,"\\\\.\\COM%d",uiPortNo+1);
 	m_hFile = ::CreateFile(str,GENERIC_READ|GENERIC_WRITE,
-						   0,0,OPEN_EXISTING,
-						   FILE_ATTRIBUTE_NORMAL|FILE_FLAG_OVERLAPPED,0);
+		0,0,OPEN_EXISTING,
+		FILE_ATTRIBUTE_NORMAL|FILE_FLAG_OVERLAPPED,0);
 	if (m_hFile == INVALID_HANDLE_VALUE)
 	{
 		switch (::GetLastError())
 		{
 		case ERROR_FILE_NOT_FOUND:
-			strcat(str," 为无效端口！");
+			strcat_s(str," 为无效端口！");
 			AfxMessageBox(str);
 			break;
 		case ERROR_ACCESS_DENIED:
-			strcat(str," 已被其他程序打开！");
+			strcat_s(str," 已被其他程序打开！");
 			AfxMessageBox(str);
 			break;
 		default:
-			strcat(str," 打开失败！未知错误！");
+			strcat_s(str," 打开失败！未知错误！");
 			AfxMessageBox(str);
 			break;
 		}
@@ -108,8 +108,8 @@ BOOL CSerialPort::Close()
 	}
 	m_pThreadRece=NULL;
 	m_pWndReceMsg=NULL;
-//	::CloseHandle(m_hEventCloseThread);
-//	m_hEventCloseThread = 0;
+	//	::CloseHandle(m_hEventCloseThread);
+	//	m_hEventCloseThread = 0;
 	if (m_hFile == 0)	
 		return TRUE;
 	::CloseHandle(m_hFile);
@@ -120,7 +120,7 @@ BOOL CSerialPort::Close()
 UINT CSerialPort::CommThread(LPVOID pParam)
 {
 	CSerialPort *port = (CSerialPort*)pParam;
-	
+
 	OVERLAPPED olRead;
 	::ZeroMemory(&olRead, sizeof(OVERLAPPED));
 	olRead.hEvent=CreateEvent(NULL, TRUE, FALSE, NULL);
@@ -160,37 +160,37 @@ UINT CSerialPort::CommThread(LPVOID pParam)
 		}
 		if(bError)	
 			break;
-		
+
 		Event = WaitForMultipleObjects(2, hEventArray, FALSE, INFINITE);
 		switch (Event)
 		{
 		case 0:
-				port->m_bThreadAlive = FALSE;
-				delete [] RXBuffer;
-				RXBuffer=NULL;
-				::ZeroMemory(&comstat, sizeof(COMSTAT));
-				CloseHandle(hEventArray[0]);
-				CloseHandle(hEventArray[1]);
-			
-				AfxEndThread(100);
-				break;
+			port->m_bThreadAlive = FALSE;
+			delete [] RXBuffer;
+			RXBuffer=NULL;
+			::ZeroMemory(&comstat, sizeof(COMSTAT));
+			CloseHandle(hEventArray[0]);
+			CloseHandle(hEventArray[1]);
+
+			AfxEndThread(100);
+			break;
 		case 1:	//读数据
-				GetCommMask(port->m_hFile, &CommEvent);				
-				if (CommEvent & EV_RXCHAR)	
-					port->ReadData(RXBuffer, &olRead);
-				break;
+			GetCommMask(port->m_hFile, &CommEvent);				
+			if (CommEvent & EV_RXCHAR)	
+				port->ReadData(RXBuffer, &olRead);
+			break;
 		default:
-				bError=1;
-				break;
+			bError=1;
+			break;
 		}
-		
+
 		if(bError)	
 			break;
 	}
 	port->m_bThreadAlive = FALSE;
 	delete [] RXBuffer;
 	RXBuffer=NULL;
-	
+
 	::ZeroMemory(&comstat, sizeof(COMSTAT));
 	CloseHandle(hEventArray[0]);
 	CloseHandle(hEventArray[1]);
@@ -248,7 +248,7 @@ BOOL CSerialPort::Config()
 	if (!::SetCommState(m_hFile,&dcb))	
 	{
 		char cherror[100];
-		sprintf(cherror,"COM%d设置错误：\n可能不支持所选波特率，或停止位，或数据位",m_nCOMNo+1);
+		sprintf_s(cherror,"COM%d设置错误：\n可能不支持所选波特率，或停止位，或数据位",m_nCOMNo+1);
 		AfxMessageBox(cherror);
 		return FALSE;
 	}
@@ -308,7 +308,7 @@ CSCCEnum::CSCCEnum()
 }
 CSCCEnum::~CSCCEnum()
 {
-	
+
 }
 void CSCCEnum::EnumPortsWdm(CArray<SSerInfo,SSerInfo&> &asi)
 {
@@ -662,7 +662,7 @@ CSCCArray::CSCCArray()
 }
 CSCCArray::~CSCCArray()
 {
-//	SaveConfig();
+	//	SaveConfig();
 }
 
 int CSCCArray::GetCOMIndex(int nCOMNo)
@@ -729,17 +729,17 @@ BOOL CSCCTools::RWReg(CSerialPort *pSP,BOOL bRead)
 {
 	CString str;
 	char strname[8];
-	sprintf(strname,"COM%d",pSP->m_nCOMNo+1);
+	sprintf_s(strname,"COM%d",pSP->m_nCOMNo+1);
 
 	if(bRead)
 	{
 		str = AfxGetApp()->GetProfileString("Settings",strname);
 		if(!str.IsEmpty())
 		{
-			int cRead = _stscanf(str , "%i:%i:%i:%i:%i:%i" , 
-						&pSP->m_nBaudRate,&pSP->m_nParityBit,
-						&pSP->m_nDataBit ,&pSP->m_nStopBit,
-						&pSP->m_nFlowCtrl,&pSP->m_nRTO);
+			int cRead = _stscanf_s(str , "%i:%i:%i:%i:%i:%i" , 
+				&pSP->m_nBaudRate,&pSP->m_nParityBit,
+				&pSP->m_nDataBit ,&pSP->m_nStopBit,
+				&pSP->m_nFlowCtrl,&pSP->m_nRTO);
 			if(cRead==6) return 1;
 		}
 	}
@@ -748,9 +748,9 @@ BOOL CSCCTools::RWReg(CSerialPort *pSP,BOOL bRead)
 		if(pSP->m_bValid)	
 		{
 			str.Format("%i:%i:%i:%i:%i:%i",
-						pSP->m_nBaudRate,pSP->m_nParityBit,
-						pSP->m_nDataBit ,pSP->m_nStopBit,
-						pSP->m_nFlowCtrl,pSP->m_nRTO);
+				pSP->m_nBaudRate,pSP->m_nParityBit,
+				pSP->m_nDataBit ,pSP->m_nStopBit,
+				pSP->m_nFlowCtrl,pSP->m_nRTO);
 			AfxGetApp()->WriteProfileString("Settings" ,strname, str);	
 		}
 	}
@@ -786,64 +786,64 @@ BOOL CSCCTools::SetupFlowCtrl(CSerialPort *pSP)
 	{
 	case NO_FC:
 		{
-		  dcb.fOutxCtsFlow = FALSE;
-		  dcb.fOutxDsrFlow = FALSE;
-		  dcb.fOutX = FALSE;
-		  dcb.fInX = FALSE;
-		  break;
+			dcb.fOutxCtsFlow = FALSE;
+			dcb.fOutxDsrFlow = FALSE;
+			dcb.fOutX = FALSE;
+			dcb.fInX = FALSE;
+			break;
 		}
 	case RTS_CTS_FC:
 		{
-		  dcb.fOutxCtsFlow = TRUE;
-		  dcb.fOutxDsrFlow = FALSE;
-		  dcb.fRtsControl = RTS_CONTROL_HANDSHAKE;
-		  dcb.fOutX = FALSE;
-		  dcb.fInX = FALSE;
-		  break;
+			dcb.fOutxCtsFlow = TRUE;
+			dcb.fOutxDsrFlow = FALSE;
+			dcb.fRtsControl = RTS_CONTROL_HANDSHAKE;
+			dcb.fOutX = FALSE;
+			dcb.fInX = FALSE;
+			break;
 		}
 	case DTR_CTS_FC:
 		{
-		  dcb.fOutxCtsFlow = TRUE;
-		  dcb.fOutxDsrFlow = FALSE;
-		  dcb.fDtrControl = DTR_CONTROL_HANDSHAKE;
-		  dcb.fOutX = FALSE;
-		  dcb.fInX = FALSE;
-		  break;
+			dcb.fOutxCtsFlow = TRUE;
+			dcb.fOutxDsrFlow = FALSE;
+			dcb.fDtrControl = DTR_CONTROL_HANDSHAKE;
+			dcb.fOutX = FALSE;
+			dcb.fInX = FALSE;
+			break;
 		}
 	case RTS_DSR_FC:
 		{
-		  dcb.fOutxCtsFlow = FALSE;
-		  dcb.fOutxDsrFlow = TRUE;
-		  dcb.fRtsControl = RTS_CONTROL_HANDSHAKE;
-		  dcb.fOutX = FALSE;
-		  dcb.fInX = FALSE;
-		  break;
+			dcb.fOutxCtsFlow = FALSE;
+			dcb.fOutxDsrFlow = TRUE;
+			dcb.fRtsControl = RTS_CONTROL_HANDSHAKE;
+			dcb.fOutX = FALSE;
+			dcb.fInX = FALSE;
+			break;
 		}
 	case DTR_DSR_FC:
 		{
-		  dcb.fOutxCtsFlow = FALSE;
-		  dcb.fOutxDsrFlow = TRUE;
-		  dcb.fDtrControl = DTR_CONTROL_HANDSHAKE;
-		  dcb.fOutX = FALSE;
-		  dcb.fInX = FALSE;
-		  break;
+			dcb.fOutxCtsFlow = FALSE;
+			dcb.fOutxDsrFlow = TRUE;
+			dcb.fDtrControl = DTR_CONTROL_HANDSHAKE;
+			dcb.fOutX = FALSE;
+			dcb.fInX = FALSE;
+			break;
 		}
 	case XON_XOFF_FC:
 		{
-		  dcb.fOutxCtsFlow = FALSE;
-		  dcb.fOutxDsrFlow = FALSE;
-		  dcb.fOutX = TRUE;
-		  dcb.fInX = TRUE;
-		  dcb.XonChar = ASCII_XON;
-		  dcb.XoffChar = ASCII_XOFF;
-		  dcb.XoffLim = 100;
-		  dcb.XonLim = 100;
-		  break;
+			dcb.fOutxCtsFlow = FALSE;
+			dcb.fOutxDsrFlow = FALSE;
+			dcb.fOutX = TRUE;
+			dcb.fInX = TRUE;
+			dcb.XonChar = ASCII_XON;
+			dcb.XoffChar = ASCII_XOFF;
+			dcb.XoffLim = 100;
+			dcb.XonLim = 100;
+			break;
 		}
 	default:
 		{
-		  ASSERT(FALSE);
-		  break;
+			ASSERT(FALSE);
+			break;
 		}
 	}
 
@@ -858,32 +858,32 @@ int CSCCTools::GetParams(int nIndex, int nParamItem)
 	{
 		switch(nIndex) 
 		{
-			case 0:		return CBR_600;
-			case 1:		return CBR_1200;
-			case 2:		return CBR_2400;
-			case 3:		return CBR_4800;
-			case 4:		return CBR_9600;
-			case 5:		return CBR_19200;  
+		case 0:		return CBR_600;
+		case 1:		return CBR_1200;
+		case 2:		return CBR_2400;
+		case 3:		return CBR_4800;
+		case 4:		return CBR_9600;
+		case 5:		return CBR_19200;  
 
-			case 6:		return CBR_75; 
-			case 7:		return CBR_110;
-			case 8:		return CBR_134;
-			case 9:		return CBR_150;
-			case 10:	return CBR_300;
-			case 11:	return CBR_1800; 
-			case 12:	return CBR_7200; 
-			case 13:	return CBR_12000;
-			case 14:	return CBR_14400;
-			case 15:	return CBR_28800;
-			case 16:	return CBR_33600;
-			case 17:	return CBR_38400;
-			case 18:	return CBR_56000;
-			case 19:	return CBR_57600;
-			case 20:	return CBR_115200;
-			case 21:	return CBR_128000;
-			case 22:	return CBR_256000;
+		case 6:		return CBR_75; 
+		case 7:		return CBR_110;
+		case 8:		return CBR_134;
+		case 9:		return CBR_150;
+		case 10:	return CBR_300;
+		case 11:	return CBR_1800; 
+		case 12:	return CBR_7200; 
+		case 13:	return CBR_12000;
+		case 14:	return CBR_14400;
+		case 15:	return CBR_28800;
+		case 16:	return CBR_33600;
+		case 17:	return CBR_38400;
+		case 18:	return CBR_56000;
+		case 19:	return CBR_57600;
+		case 20:	return CBR_115200;
+		case 21:	return CBR_128000;
+		case 22:	return CBR_256000;
 
-			default:	return CBR_9600;
+		default:	return CBR_9600;
 		}
 	}
 	else if(nParamItem==1)	//检验位
@@ -910,32 +910,32 @@ int CSCCTools::GetParIndex(int nParam, int nParamItem)
 	{
 		switch(nParam) 
 		{
-			case CBR_600	:  	return 0;
-			case CBR_1200	:  	return 1;
-			case CBR_2400	:  	return 2;
-			case CBR_4800	:  	return 3;
-			case CBR_9600	:  	return 4;
-			case CBR_19200	:  	return 5;
-                                                                 
-			case CBR_75		:  	return 6;
-			case CBR_110	:  	return 7;
-			case CBR_134	:   return 8;
-			case CBR_150	:   return 9;
-			case CBR_300    :	return 10;
-			case CBR_1800   :	return 11;
-			case CBR_7200   :	return 12;
-			case CBR_12000  :	return 13;
-			case CBR_14400  :	return 14;
-			case CBR_28800  :	return 15;
-			case CBR_33600  :	return 16;
-			case CBR_38400  :	return 17;
-			case CBR_56000  :	return 18;
-			case CBR_57600  :	return 19;
-			case CBR_115200 :	return 20;
-			case CBR_128000 :	return 21;
-			case CBR_256000 :	return 22;
+		case CBR_600	:  	return 0;
+		case CBR_1200	:  	return 1;
+		case CBR_2400	:  	return 2;
+		case CBR_4800	:  	return 3;
+		case CBR_9600	:  	return 4;
+		case CBR_19200	:  	return 5;
 
-			default:	return 4;
+		case CBR_75		:  	return 6;
+		case CBR_110	:  	return 7;
+		case CBR_134	:   return 8;
+		case CBR_150	:   return 9;
+		case CBR_300    :	return 10;
+		case CBR_1800   :	return 11;
+		case CBR_7200   :	return 12;
+		case CBR_12000  :	return 13;
+		case CBR_14400  :	return 14;
+		case CBR_28800  :	return 15;
+		case CBR_33600  :	return 16;
+		case CBR_38400  :	return 17;
+		case CBR_56000  :	return 18;
+		case CBR_57600  :	return 19;
+		case CBR_115200 :	return 20;
+		case CBR_128000 :	return 21;
+		case CBR_256000 :	return 22;
+
+		default:	return 4;
 		}
 	}
 	else if(nParamItem==1)	//检验位
@@ -1013,7 +1013,7 @@ CString CSCCTools::HexToStr(BYTE *btData, int nLength)
 	for(; i < nl; i++)                           
 	{          
 		strCvt.Format("%02X ", btData[i]);     
-	   	strOutput += strCvt;                                    
+		strOutput += strCvt;                                    
 	}         
 	strCvt.Format("%02X", btData[i]);
 	strOutput+=strCvt;
@@ -1046,7 +1046,7 @@ int CSCCTools::StrToHex(CString str, BYTE *btData)
 	int nLength=str.GetLength();
 	if(nLength<2)	return 0;
 	int i = 0;
-	for(;i<nLength;i+=3)_stscanf(str.Mid(i,2),"%02X",&btData[i/3]);
+	for(;i<nLength;i+=3)_stscanf_s(str.Mid(i,2),"%02X",&btData[i/3]);
 	return (i+1)/3;
 }
 
@@ -1059,7 +1059,7 @@ void CSCCTools::HexToStr(BYTE *btData, int nLength, CString &strOutput)
 	for(; i < nl; i++)                           
 	{          
 		strCvt.Format("%02X ", btData[i]);     
-	   	strOutput += strCvt;                                    
+		strOutput += strCvt;                                    
 	}         
 	strCvt.Format("%02X", btData[i]);
 	strOutput+=strCvt;
@@ -1074,7 +1074,7 @@ BOOL CSCCTools::MakeAscHex(CString str, CString &strNew, BOOL bToAsc)
 	{		
 		if(!IsHexFormat(str))	return 0;
 		BYTE btTmp[4096];
-		for(int i=0;i<nRead;i+=3)	_stscanf(str.Mid(i,2),"%02X",&btTmp[i/3]);
+		for(int i=0;i<nRead;i+=3)	_stscanf_s(str.Mid(i,2),"%02X",&btTmp[i/3]);
 		strNew=btTmp;
 	}
 	else
@@ -1151,7 +1151,7 @@ BOOL CSCCTools::IsHexFormat(CString str, CString &strError, int &nErrorPos)
 		if(chr!=' ')	
 		{
 			if(isascii(chr)==0)
-				 strError.Format("第 %d 个字节后为非ASCII字符，其16进制为：  %02X H。必须改为  空格",i/3+1,(BYTE)chr);
+				strError.Format("第 %d 个字节后为非ASCII字符，其16进制为：  %02X H。必须改为  空格",i/3+1,(BYTE)chr);
 			else strError.Format("第 %d 个字节后的字符  \' %c \'  必须改为  空格",i/3+1,chr);
 			nErrorPos=i+3;
 			return 0;
@@ -1173,13 +1173,13 @@ BOOL CSCCTools::IsHexFormat(CString str, CString &strError, int &nErrorPos)
 				if(j==0)	
 				{
 					if(isascii(chr)==0)
-						 strError.Format("第 %d 个字节的高位为非ASCII字符，其16进制为：  %02X H。必须是16进制数",i/3+1,(BYTE)chr);
+						strError.Format("第 %d 个字节的高位为非ASCII字符，其16进制为：  %02X H。必须是16进制数",i/3+1,(BYTE)chr);
 					else strError.Format("第 %d 个字节的高位不能为  \' %c \'，必须是16进制数",i/3+1,chr);
 				}
 				else	
 				{
 					if(isascii(chr)==0)
-						 strError.Format("第 %d 个字节的低位为非ASCII字符，其16进制为：  %2X H。必须是16进制数",i/3+1,(BYTE)chr);
+						strError.Format("第 %d 个字节的低位为非ASCII字符，其16进制为：  %2X H。必须是16进制数",i/3+1,(BYTE)chr);
 					else strError.Format("第 %d 个字节的低位不能为  \' %c \'，必须是16进制数",i/3+1,chr);
 				}
 				nErrorPos=i+j+1;

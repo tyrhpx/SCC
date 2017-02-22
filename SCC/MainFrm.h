@@ -115,6 +115,10 @@ private:
 	void RecvSCCMsg(WPARAM wParam, LPARAM lParam);
 	void CreateSCCTool();
 	BOOL IsCASDown(int nFlag);
+	CMFCToolBarComboBoxButton* GetSCCComboCtrl(UINT nID)
+	{
+		return CMFCToolBarComboBoxButton::GetByCmd(nID);
+	}
 	
 public:
 	afx_msg void OnSccSetButton(UINT nID);

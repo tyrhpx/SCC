@@ -29,37 +29,37 @@ CXRichEditCtrl::CXRichEditCtrl()
 	m_cfText.dwEffects		= 0;
 	m_cfText.yHeight		= lHeight;
 	m_cfText.crTextColor	= RGB(0, 0, 0);
-	strcpy(m_cfText.szFaceName,	_T("宋体"));
+	strcpy_s(m_cfText.szFaceName,	_T("宋体"));
 	m_cfComment.cbSize		= uiSize;
 	m_cfComment.dwMask		= dwMask;
 	m_cfComment.dwEffects	= 0;
 	m_cfComment.yHeight		= lHeight;
 	m_cfComment.crTextColor	= RGB(0, 128, 0);
-	strcpy(m_cfComment.szFaceName, _T("宋体"));
+	strcpy_s(m_cfComment.szFaceName, _T("宋体"));
 	m_cfRecv.cbSize			= uiSize;
 	m_cfRecv.dwMask			= dwMask;
 	m_cfRecv.dwEffects		= 0;
 	m_cfRecv.yHeight		= lHeight;
 	m_cfRecv.crTextColor	= RGB(0, 0, 200);
-	strcpy(m_cfRecv.szFaceName,	_T("宋体"));
+	strcpy_s(m_cfRecv.szFaceName,	_T("宋体"));
 	m_cfSend.cbSize		= uiSize;
 	m_cfSend.dwMask		= dwMask;
 	m_cfSend.dwEffects	= 0;
 	m_cfSend.yHeight		= lHeight;
 	m_cfSend.crTextColor	= RGB(200, 0, 0);
-	strcpy(m_cfSend.szFaceName, _T("宋体"));
+	strcpy_s(m_cfSend.szFaceName, _T("宋体"));
 	m_cfGray.cbSize		= uiSize;
 	m_cfGray.dwMask		= dwMask;
 	m_cfGray.dwEffects	= 0;
 	m_cfGray.yHeight		= lHeight;
 	m_cfGray.crTextColor	= RGB(128, 128, 128);
-	strcpy(m_cfGray.szFaceName, _T("宋体"));
+	strcpy_s(m_cfGray.szFaceName, _T("宋体"));
 	m_cfNumber.cbSize		= uiSize;
 	m_cfNumber.dwMask		= dwMask;
 	m_cfNumber.dwEffects	= 0;
 	m_cfNumber.yHeight		= lHeight;
 	m_cfNumber.crTextColor	= RGB(200, 0, 0);
-	strcpy(m_cfNumber.szFaceName, _T("宋体"));
+	strcpy_s(m_cfNumber.szFaceName, _T("宋体"));
 }
 
 CXRichEditCtrl::~CXRichEditCtrl()
@@ -239,7 +239,7 @@ BOOL CXRichEditCtrl::MakeAscHex(CString str, CString &strNew, BOOL bToAsc)
 			return 0;
 		BYTE btTmp[4096];
 		for(int i=0;i<nRead;i+=3)	
-			_stscanf(str.Mid(i,2),"%02X",&btTmp[i/3]);
+			_stscanf_s(str.Mid(i,2),"%02X",&btTmp[i/3]);
 		strNew=btTmp;
 	}
 	else
@@ -468,7 +468,7 @@ int CXRichEditCtrl::StrToHex(CString str,BYTE* btData)
 	int nLength=str.GetLength();
 	if(nLength<2)	return 0;
 	int i;
-	for(i=0;i<nLength;i+=3)	_stscanf(str.Mid(i,2),"%02X",&btData[i/3]);
+	for(i=0;i<nLength;i+=3)	_stscanf_s(str.Mid(i,2),"%02X",&btData[i/3]);
 	return (i+1)/3;
 }
 

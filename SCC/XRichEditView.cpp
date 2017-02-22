@@ -127,37 +127,37 @@ CXRichEditView::CXRichEditView()
 	m_cfText.dwEffects		= 0;
 	m_cfText.yHeight		= lHeight;
 	m_cfText.crTextColor	= RGB(0, 0, 0);
-	strcpy(m_cfText.szFaceName,	_T("宋体"));
+	strcpy_s(m_cfText.szFaceName, _T("宋体"));
 	m_cfComment.cbSize		= uiSize;
 	m_cfComment.dwMask		= dwMask;
 	m_cfComment.dwEffects	= 0;
 	m_cfComment.yHeight		= lHeight;
 	m_cfComment.crTextColor	= RGB(0, 128, 0);
-	strcpy(m_cfComment.szFaceName, _T("宋体"));
+	strcpy_s(m_cfComment.szFaceName, _T("宋体"));
 	m_cfRecv.cbSize			= uiSize;
 	m_cfRecv.dwMask			= dwMask;
 	m_cfRecv.dwEffects		= 0;
 	m_cfRecv.yHeight		= lHeight;
 	m_cfRecv.crTextColor	= RGB(0, 0, 200);
-	strcpy(m_cfRecv.szFaceName,	_T("宋体"));
+	strcpy_s(m_cfRecv.szFaceName,	_T("宋体"));
 	m_cfSend.cbSize		= uiSize;
 	m_cfSend.dwMask		= dwMask;
 	m_cfSend.dwEffects	= 0;
 	m_cfSend.yHeight		= lHeight;
 	m_cfSend.crTextColor	= RGB(200, 0, 0);
-	strcpy(m_cfSend.szFaceName, _T("宋体"));
+	strcpy_s(m_cfSend.szFaceName, _T("宋体"));
 	m_cfGray.cbSize		= uiSize;
 	m_cfGray.dwMask		= dwMask;
 	m_cfGray.dwEffects	= 0;
 	m_cfGray.yHeight		= lHeight;
 	m_cfGray.crTextColor	= RGB(128, 128, 128);
-	strcpy(m_cfGray.szFaceName, _T("宋体"));
+	strcpy_s(m_cfGray.szFaceName, _T("宋体"));
 	m_cfNumber.cbSize		= uiSize;
 	m_cfNumber.dwMask		= dwMask;
 	m_cfNumber.dwEffects	= 0;
 	m_cfNumber.yHeight		= lHeight;
 	m_cfNumber.crTextColor	= RGB(200, 0, 0);
-	strcpy(m_cfNumber.szFaceName, _T("宋体"));
+	strcpy_s(m_cfNumber.szFaceName, _T("宋体"));
 }
 
 CXRichEditView::~CXRichEditView()
@@ -208,13 +208,13 @@ void CXRichEditView::OnDestroy()
 {
 	// Deactivate the item on destruction; this is important
 	// when a splitter view is being used.
-   CRichEditView::OnDestroy();
    COleClientItem* pActiveItem = GetDocument()->GetInPlaceActiveItem(this);
    if (pActiveItem != NULL && pActiveItem->GetActiveView() == this)
    {
       pActiveItem->Deactivate();
       ASSERT(GetDocument()->GetInPlaceActiveItem(this) == NULL);
    }
+   CRichEditView::OnDestroy();
 }
 
 

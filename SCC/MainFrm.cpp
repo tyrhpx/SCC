@@ -101,8 +101,6 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	if (CFrameWndEx::OnCreate(lpCreateStruct) == -1)
 		return -1;
 
-	BOOL bNameValid;
-
 	// 设置用于绘制所有用户界面元素的视觉管理器
 	CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerWindows));
 
@@ -401,7 +399,7 @@ void CMainFrame::DisplayStr( CString str,int nCOMIndex,BOOL bRecv/*=1*/,BOOL bEn
 	CSCCView* pView=GetView();
 	if(m_bSTime)
 	{
-		_strtime( strtmp.GetBuffer(9) );
+		_strtime_s( strtmp.GetBuffer(9), 9 );
 		strtmp.ReleaseBuffer();
 		str1.Format(" %03.0d",(::GetTickCount()-m_dwMs)%1000);
 		m_dwMs=::GetTickCount();
@@ -432,11 +430,11 @@ void CMainFrame::SetCOMParam( CSerialPort *psp, int nSet )
 {
 	if(nSet==0)	//以当前组合框值设置当前所选串口
 	{
-		psp->m_nBaudRate=CSCCTools::GetParams(m_pCbxBaud->GetCurSel(),0);
-		psp->m_nParityBit=CSCCTools::GetParams(m_pCbxParity->GetCurSel(),1);
-		psp->m_nDataBit=CSCCTools::GetParams(m_pCbxData->GetCurSel(),2);
-		psp->m_nStopBit=CSCCTools::GetParams(m_pCbxStop->GetCurSel(),3);
-		psp->m_nRTO=(m_pCbxRTO->GetCurSel()+1)*20;
+		psp->m_nBaudRate=CSCCTools::GetParams(GetSCCComboCtrl(ID_SCC_SET_BAUD)->GetCurSel(),0);
+		psp->m_nParityBit=CSCCTools::GetParams(GetSCCComboCtrl(ID_SCC_SET_PARITY)->GetCurSel(),1);
+		psp->m_nDataBit=CSCCTools::GetParams(GetSCCComboCtrl(ID_SCC_SET_DATA)->GetCurSel(),2);
+		psp->m_nStopBit=CSCCTools::GetParams(GetSCCComboCtrl(ID_SCC_SET_STOP)->GetCurSel(),3);
+		psp->m_nRTO=(GetSCCComboCtrl(ID_SCC_SET_RTO)->GetCurSel()+1)*20;
 	}
 	else if(nSet==1)//设置当前所选串口
 	{
@@ -446,7 +444,7 @@ void CMainFrame::SetCOMParam( CSerialPort *psp, int nSet )
 		m_pCbxStop->SelectItem(CSCCTools::GetParIndex(psp->m_nStopBit,3));
 		m_pCbxRTO->SelectItem((psp->m_nRTO>=20)?(psp->m_nRTO/20-1):0);
 	}
-	else if(nSet==2)//设置组合框
+	else if(nSet==2)//设置组合框默认数据
 	{
 		m_pCbxBaud->SelectItem(CSCCTools::GetParIndex(115200,0));
 		m_pCbxParity->SelectItem(CSCCTools::GetParIndex(NOPARITY,1));
@@ -766,7 +764,7 @@ void CMainFrame::OnSCCCommon( UINT nID )
 		int nCOMNo = pSrcCombo->GetCurSel();
 		if(m_ascc.IsCOMOpen(nCOMNo))
 		{
-			if(m_ascc.CloseCOM(nCOMNo));
+			m_ascc.CloseCOM(nCOMNo);
 		}
 		else
 		{
