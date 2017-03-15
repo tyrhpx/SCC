@@ -438,19 +438,19 @@ void CMainFrame::SetCOMParam( CSerialPort *psp, int nSet )
 	}
 	else if(nSet==1)//设置当前所选串口
 	{
-		m_pCbxBaud->SelectItem(CSCCTools::GetParIndex(psp->m_nBaudRate,0));
-		m_pCbxParity->SelectItem(CSCCTools::GetParIndex(psp->m_nParityBit,1));
-		m_pCbxData->SelectItem(CSCCTools::GetParIndex(psp->m_nDataBit,2));
-		m_pCbxStop->SelectItem(CSCCTools::GetParIndex(psp->m_nStopBit,3));
-		m_pCbxRTO->SelectItem((psp->m_nRTO>=20)?(psp->m_nRTO/20-1):0);
+		GetSCCComboCtrl(ID_SCC_SET_BAUD)->SelectItem(CSCCTools::GetParIndex(psp->m_nBaudRate,0));
+		GetSCCComboCtrl(ID_SCC_SET_PARITY)->SelectItem(CSCCTools::GetParIndex(psp->m_nParityBit,1));
+		GetSCCComboCtrl(ID_SCC_SET_DATA)->SelectItem(CSCCTools::GetParIndex(psp->m_nDataBit,2));
+		GetSCCComboCtrl(ID_SCC_SET_STOP)->SelectItem(CSCCTools::GetParIndex(psp->m_nStopBit,3));
+		GetSCCComboCtrl(ID_SCC_SET_RTO)->SelectItem((psp->m_nRTO>=20)?(psp->m_nRTO/20-1):0);
 	}
 	else if(nSet==2)//设置组合框默认数据
 	{
-		m_pCbxBaud->SelectItem(CSCCTools::GetParIndex(115200,0));
-		m_pCbxParity->SelectItem(CSCCTools::GetParIndex(NOPARITY,1));
-		m_pCbxData->SelectItem(CSCCTools::GetParIndex(8,2));
-		m_pCbxStop->SelectItem(CSCCTools::GetParIndex(ONESTOPBIT,3));
-		m_pCbxRTO->SelectItem(0);
+		GetSCCComboCtrl(ID_SCC_SET_BAUD)->SelectItem(CSCCTools::GetParIndex(115200,0));
+		GetSCCComboCtrl(ID_SCC_SET_PARITY)->SelectItem(CSCCTools::GetParIndex(NOPARITY,1));
+		GetSCCComboCtrl(ID_SCC_SET_DATA)->SelectItem(CSCCTools::GetParIndex(8,2));
+		GetSCCComboCtrl(ID_SCC_SET_STOP)->SelectItem(CSCCTools::GetParIndex(ONESTOPBIT,3));
+		GetSCCComboCtrl(ID_SCC_SET_RTO)->SelectItem(0);
 	}
 	else//设置当前所选串口
 	{
@@ -696,11 +696,6 @@ void CMainFrame::OnSccSetButton( UINT nID )
 
 void CMainFrame::OnUpdateSccSetButton( CCmdUI* pCmdUI )
 {
-// 	m_pCbxBaud->EnableWindow(bEnable);
-// 	CMFCToolBarComboBoxButton::GetByCmd(ID_SCC_SET_PARITY, FALSE)->EnableWindow(bEnable);
-// 	CMFCToolBarComboBoxButton::GetByCmd(ID_SCC_SET_DATA)->EnableWindow(bEnable);
-// 	CMFCToolBarComboBoxButton::GetByCmd(ID_SCC_SET_STOP)->EnableWindow(bEnable);
-// 	CMFCToolBarComboBoxButton::GetByCmd(ID_SCC_SET_RTO)->EnableWindow(bEnable);
 	pCmdUI->Enable(!IsCOMOpen());
 }
 
