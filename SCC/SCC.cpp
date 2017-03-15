@@ -174,6 +174,8 @@ protected:
 // 实现
 protected:
 	DECLARE_MESSAGE_MAP()
+public:
+	virtual BOOL OnInitDialog();
 };
 
 CAboutDlg::CAboutDlg() : CDialogEx(CAboutDlg::IDD)
@@ -187,6 +189,26 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
 END_MESSAGE_MAP()
+
+
+BOOL CAboutDlg::OnInitDialog()
+{
+	CDialogEx::OnInitDialog();
+
+	// TODO:  在此添加额外的初始化
+	CString strText = _T("更新说明：\r\n");
+	strText.Append("==========================================================\r\n");
+	strText.Append("[2017/3/15]\r\n");
+	strText.Append("* 修复串口号更改后不能改变波特率的BUG\r\n\r\n");
+	strText.Append("[2017/2/22]\r\n");
+	strText.Append("* 修复BUG：波特率等参数修改后不能生效。\r\n");
+	strText.Append("修正版本信息显示\r\n\r\n");
+	strText.Append("[2014/11/25]\r\n");
+	strText.Append("* SCC ComDebugTool 初始化编译优化后提交，去除了界面库。");
+	SetDlgItemText(IDC_ET_README, strText);
+	return TRUE;  // return TRUE unless you set the focus to a control
+	// 异常: OCX 属性页应返回 FALSE
+}
 
 // 用于运行对话框的应用程序命令
 void CSCCApp::OnAppAbout()
@@ -215,6 +237,4 @@ void CSCCApp::SaveCustomState()
 }
 
 // CSCCApp 消息处理程序
-
-
 
