@@ -92,7 +92,6 @@ protected:
 	void ReplaceBtnIcon(UINT unID, int nNew);
 	void CreateImagelist();
 
-	DWORD m_dwMs;
 	BYTE m_btTrigger,m_btTriggerCOM;
 
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);

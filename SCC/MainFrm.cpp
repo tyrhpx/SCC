@@ -71,7 +71,6 @@ CMainFrame::CMainFrame()
 	m_nToolBtns=0;
 	m_bToNext=0;
 	m_unCycTimer=0;
-	m_dwMs=::GetTickCount();
 	m_unMulti=0;
 	m_bTrigger=0;
 	m_btTrigger=0;
@@ -395,15 +394,13 @@ void CMainFrame::DisplayStr( CString str,int nCOMIndex,BOOL bRecv/*=1*/,BOOL bEn
 		if(nCOMIndex!=m_nCurCOM)	
 			return;
 	}
-	CString strtmp,str1;
+	CString strtmp;
 	CSCCView* pView=GetView();
 	if(m_bSTime)
 	{
-		_strtime_s( strtmp.GetBuffer(9), 9 );
-		strtmp.ReleaseBuffer();
-		str1.Format(" %03.0d",(::GetTickCount()-m_dwMs)%1000);
-		m_dwMs=::GetTickCount();
-		strtmp="["+strtmp+str1+"] ";
+		SYSTEMTIME st;
+		GetLocalTime(&st);
+		strtmp.Format("[%02d:%02d:%02d.%03d]", st.wHour, st.wMinute, st.wSecond, st.wMilliseconds);
 		pView->AddString(strtmp,5);
 	}
 	if(m_bSPort)//¡ü¡ý
@@ -420,7 +417,6 @@ void CMainFrame::DisplayStr( CString str,int nCOMIndex,BOOL bRecv/*=1*/,BOOL bEn
 			pView->AddString("¡ý",5);
 	}
 	strtmp.Empty();
-	str1.Empty();
 	str+='\n';
 	pView->AddString(str,bRecv?3:4);
 	pView=NULL;
