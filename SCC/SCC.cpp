@@ -198,6 +198,8 @@ BOOL CAboutDlg::OnInitDialog()
 	// TODO:  在此添加额外的初始化
 	CString strText = _T("更新说明：\r\n");
 	strText.Append("==========================================================\r\n");
+	strText.Append("[2019/10/07]\r\n");
+	strText.Append("* 修复时间毫秒显示异常的问题\r\n\r\n");
 	strText.Append("[2017/3/15]\r\n");
 	strText.Append("* 修复串口号更改后不能改变波特率的BUG\r\n\r\n");
 	strText.Append("[2017/2/22]\r\n");
